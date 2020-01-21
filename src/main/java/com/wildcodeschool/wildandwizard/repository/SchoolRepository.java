@@ -16,9 +16,36 @@ public class SchoolRepository {
     private final static String DB_URL = "jdbc:mysql://localhost:3306/spring_jdbc_quest?serverTimezone=GMT";
     private final static String DB_USER = "h4rryp0tt3r";
     private final static String DB_PASSWORD = "Horcrux4life!";
+    
+//  NOTE:
+//	
+//  Wenn die JDBC Resourcen als Member-Variablen (und nicht in den Methoden) definiert
+//  würden, dann kann es zu Concurrency-Problemen kommen.
+
+//	Connection conn = null;
+//	PreparedStatement stmt = null;
+//	ResultSet rs = null;
+    
 
     public void deleteById(Long id) {
-        // TODO: delete a school from the database
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+        	connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        	statement = connection.prepareStatement("DELETE FROM school WHERE id=?");
+        	statement.setLong(1, id);
+        	
+        	if(statement.executeUpdate() != 1) {
+        		throw new SQLException("failed to delete data");
+        	}
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        } finally {
+        	JdbcUtils.closeResultSet(resultSet);
+        	JdbcUtils.closeStatement(statement);
+        	JdbcUtils.closeConnection(connection);
+        }
     }
 
     public List<School> findAll() {

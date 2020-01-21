@@ -13,14 +13,23 @@ public class SchoolController {
 
     @GetMapping("/school/delete")
     public String deleteWizard(@RequestParam Long id) {
+    	
+    	System.out.println("Bin im SchoolController, Methode deleteWizard");
 
         repository.deleteById(id);
 
+        // Test: mal das "redirect:" weglassen
+        // --> führt zu einer "org.thymeleaf.exceptions.TemplateInputException"
+        // return "schools";
+        
         return "redirect:/schools";
+        
     }
 
     @GetMapping("/schools")
     public String getAll(Model model) {
+    	
+    	System.out.println("Bin im SchoolController, Methode getAll");
 
         model.addAttribute("schools", repository.findAll());
 
